@@ -66,6 +66,10 @@ export function HomePage() {
     p.state.toLowerCase().includes(search.toLowerCase())
   )
 
+  function handleSearch() {
+    document.getElementById('listings')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const featuredProperties = properties.filter(p => p.is_featured).slice(0, 3)
 
   return (
