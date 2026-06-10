@@ -16,7 +16,7 @@ import { AdminSettings } from '@/pages/admin/AdminSettings'
 
 export default function App() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="haven-theme">
+    <ThemeProvider defaultTheme="dark" storageKey="haven-theme">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />

@@ -92,14 +92,14 @@ export function PropertyDetailPage() {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container mx-auto max-w-7xl px-4 py-8">
-          <Skeleton className="h-[400px] w-full rounded-2xl" />
+          <Skeleton className="h-[420px] w-full rounded-2xl bg-white/5" />
           <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3">
-            <div className="lg:col-span-2 space-y-4">
-              <Skeleton className="h-8 w-2/3" />
-              <Skeleton className="h-4 w-1/3" />
-              <Skeleton className="h-32 w-full" />
+            <div className="space-y-4 lg:col-span-2">
+              <Skeleton className="h-8 w-2/3 bg-white/5" />
+              <Skeleton className="h-4 w-1/3 bg-white/5" />
+              <Skeleton className="h-32 w-full bg-white/5" />
             </div>
-            <Skeleton className="h-64 rounded-xl" />
+            <Skeleton className="h-64 rounded-2xl bg-white/5" />
           </div>
         </div>
       </div>
@@ -110,9 +110,11 @@ export function PropertyDetailPage() {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="container mx-auto max-w-7xl px-4 py-20 text-center">
-          <h1 className="text-2xl font-semibold">Property not found</h1>
-          <Button className="mt-4" asChild><Link to="/">Back to listings</Link></Button>
+        <div className="container mx-auto max-w-7xl px-4 py-24 text-center">
+          <h1 className="font-serif text-3xl text-foreground">Property not found</h1>
+          <Button className="mt-6 bg-foreground text-background hover:bg-foreground/90" asChild>
+            <Link to="/">Back to listings</Link>
+          </Button>
         </div>
       </div>
     )
@@ -122,45 +124,54 @@ export function PropertyDetailPage() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto max-w-7xl px-4 py-6">
+      <main className="container mx-auto max-w-7xl px-4 py-6 animate-fade-in">
         {/* Breadcrumb */}
-        <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
-          <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
+        <div className="mb-5 flex items-center gap-2 text-sm text-muted-foreground">
+          <Link to="/" className="transition-colors hover:text-foreground">Home</Link>
           <ChevronRight className="size-3" />
           <span className="capitalize">{property.property_type}s</span>
           <ChevronRight className="size-3" />
-          <span className="text-foreground font-medium truncate">{property.title}</span>
+          <span className="truncate text-foreground/80">{property.title}</span>
         </div>
 
         {/* Photo Gallery */}
-        <div className="grid grid-cols-4 grid-rows-2 gap-2 rounded-2xl overflow-hidden h-[400px]">
-          <div className="col-span-2 row-span-2">
-            <img src={photos[0]} alt={property.title} className="size-full object-cover" />
+        <div className="grid grid-cols-4 grid-rows-2 gap-2 overflow-hidden rounded-2xl" style={{ height: '420px' }}>
+          <div className="col-span-2 row-span-2 overflow-hidden">
+            <img src={photos[0]} alt={property.title} className="size-full object-cover transition-transform duration-500 hover:scale-105" />
           </div>
           {photos.slice(1).map((photo, i) => (
-            <div key={i} className="col-span-2 row-span-1">
-              <img src={photo} alt={`View ${i + 2}`} className="size-full object-cover" />
+            <div key={i} className="col-span-2 row-span-1 overflow-hidden">
+              <img src={photo} alt={`View ${i + 2}`} className="size-full object-cover transition-transform duration-500 hover:scale-105" />
             </div>
           ))}
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Left Column - Details */}
-          <div className="lg:col-span-2 space-y-8">
+        <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-3">
+          {/* Left Column */}
+          <div className="space-y-8 lg:col-span-2">
             {/* Title & Overview */}
             <div>
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  {property.is_featured && <Badge className="mb-2">Featured</Badge>}
-                  <h1 className="scroll-m-20 text-3xl font-bold tracking-tight">{property.title}</h1>
-                  <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1"><MapPin className="size-4" />{property.address}, {property.city}, {property.state} {property.zip_code}</span>
+                  {property.is_featured && (
+                    <Badge className="mb-3 border-gold/30 bg-gold/10 text-[10px] font-semibold uppercase tracking-wider text-gold">
+                      Featured
+                    </Badge>
+                  )}
+                  <h1 className="font-serif text-3xl font-normal tracking-tight text-foreground md:text-4xl">
+                    {property.title}
+                  </h1>
+                  <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1.5">
+                      <MapPin className="size-3.5 shrink-0" />
+                      {property.address}, {property.city}, {property.state} {property.zip_code}
+                    </span>
                   </div>
                 </div>
                 {property.rating_avg > 0 && (
-                  <div className="shrink-0 text-center">
-                    <div className="flex items-center gap-1 text-lg font-bold">
-                      <Star className="size-5 fill-current text-yellow-500" />
+                  <div className="shrink-0 text-right">
+                    <div className="flex items-center gap-1.5 text-lg font-bold text-foreground">
+                      <Star className="size-4 fill-gold text-gold" />
                       {property.rating_avg.toFixed(2)}
                     </div>
                     <p className="text-xs text-muted-foreground">{property.review_count} reviews</p>
@@ -168,44 +179,40 @@ export function PropertyDetailPage() {
                 )}
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-4">
-                <div className="flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm">
-                  <Bed className="size-4 text-muted-foreground" />
-                  <span>{property.bedrooms === 0 ? 'Studio' : `${property.bedrooms} Bedroom${property.bedrooms > 1 ? 's' : ''}`}</span>
-                </div>
-                <div className="flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm">
-                  <Bath className="size-4 text-muted-foreground" />
-                  <span>{property.bathrooms} Bathroom{property.bathrooms > 1 ? 's' : ''}</span>
-                </div>
-                <div className="flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm">
-                  <Users className="size-4 text-muted-foreground" />
-                  <span>Up to {property.max_guests} guests</span>
-                </div>
-                <div className="flex items-center gap-2 rounded-lg border bg-card px-3 py-2 text-sm capitalize">
-                  <span className="text-base">{property.property_type === 'cabin' ? '🌲' : property.property_type === 'villa' ? '🏛️' : '🏠'}</span>
-                  <span>{property.property_type}</span>
-                </div>
+              <div className="mt-5 flex flex-wrap gap-3">
+                {[
+                  { label: property.bedrooms === 0 ? 'Studio' : `${property.bedrooms} Bedroom${property.bedrooms > 1 ? 's' : ''}`, icon: Bed },
+                  { label: `${property.bathrooms} Bathroom${property.bathrooms > 1 ? 's' : ''}`, icon: Bath },
+                  { label: `Up to ${property.max_guests} guests`, icon: Users },
+                ].map(item => (
+                  <div key={item.label} className="flex items-center gap-2 rounded-xl border border-white/8 bg-white/4 px-3.5 py-2 text-sm text-foreground">
+                    <item.icon className="size-3.5 text-muted-foreground" />
+                    <span>{item.label}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <Separator />
+            <Separator className="bg-white/8" />
 
             {/* Description */}
             <div>
-              <h2 className="scroll-m-20 text-xl font-semibold tracking-tight">About this property</h2>
-              <p className="mt-3 leading-7 text-muted-foreground">{property.description}</p>
+              <h2 className="font-serif text-xl font-normal text-foreground">About this property</h2>
+              <p className="mt-4 leading-7 text-muted-foreground">{property.description}</p>
             </div>
 
-            <Separator />
+            <Separator className="bg-white/8" />
 
             {/* Amenities */}
             {property.amenities && property.amenities.length > 0 && (
               <div>
-                <h2 className="scroll-m-20 text-xl font-semibold tracking-tight">What this place offers</h2>
-                <div className="mt-4 grid grid-cols-2 gap-3">
+                <h2 className="font-serif text-xl font-normal text-foreground">What this place offers</h2>
+                <div className="mt-5 grid grid-cols-2 gap-3">
                   {(property.amenities as string[]).map(amenity => (
-                    <div key={amenity} className="flex items-center gap-2 text-sm">
-                      <Check className="size-4 shrink-0 text-primary" />
+                    <div key={amenity} className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                      <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-white/8">
+                        <Check className="size-3 text-foreground" />
+                      </div>
                       {amenity}
                     </div>
                   ))}
@@ -213,42 +220,48 @@ export function PropertyDetailPage() {
               </div>
             )}
 
-            <Separator />
+            <Separator className="bg-white/8" />
 
-            {/* Check-in info */}
+            {/* House rules */}
             <div>
-              <h2 className="scroll-m-20 text-xl font-semibold tracking-tight">House rules</h2>
-              <div className="mt-4 grid grid-cols-2 gap-4">
+              <h2 className="font-serif text-xl font-normal text-foreground">House rules</h2>
+              <div className="mt-5 grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-3">
-                  <Clock className="size-5 text-muted-foreground" />
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/5">
+                    <Clock className="size-4 text-muted-foreground" />
+                  </div>
                   <div>
-                    <p className="text-sm font-medium">Check-in</p>
+                    <p className="text-sm font-medium text-foreground">Check-in</p>
                     <p className="text-sm text-muted-foreground">After {property.check_in_time}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Clock className="size-5 text-muted-foreground" />
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/5">
+                    <Clock className="size-4 text-muted-foreground" />
+                  </div>
                   <div>
-                    <p className="text-sm font-medium">Check-out</p>
+                    <p className="text-sm font-medium text-foreground">Check-out</p>
                     <p className="text-sm text-muted-foreground">Before {property.check_out_time}</p>
                   </div>
                 </div>
                 {property.min_stay_nights > 1 && (
                   <div className="flex items-center gap-3">
-                    <CalendarDays className="size-5 text-muted-foreground" />
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/5">
+                      <CalendarDays className="size-4 text-muted-foreground" />
+                    </div>
                     <div>
-                      <p className="text-sm font-medium">Minimum stay</p>
+                      <p className="text-sm font-medium text-foreground">Minimum stay</p>
                       <p className="text-sm text-muted-foreground">{property.min_stay_nights} nights</p>
                     </div>
                   </div>
                 )}
               </div>
               {property.rules && Object.keys(property.rules).length > 0 && (
-                <div className="mt-4 grid grid-cols-2 gap-2">
+                <div className="mt-5 grid grid-cols-2 gap-2.5">
                   {Object.entries(property.rules as Record<string, boolean | string>).map(([rule, value]) => (
                     <div key={rule} className="flex items-center gap-2 text-sm">
-                      <span className={value === true || value === 'true' ? 'text-red-500' : 'text-green-500'}>
-                        {value === true || value === 'true' ? '✗' : '✓'}
+                      <span className={value === true || value === 'true' ? 'text-destructive' : 'text-emerald-500'}>
+                        {value === true || value === 'true' ? '✕' : '✓'}
                       </span>
                       <span className="capitalize text-muted-foreground">{rule.replace(/_/g, ' ')}</span>
                     </div>
@@ -258,27 +271,27 @@ export function PropertyDetailPage() {
             </div>
           </div>
 
-          {/* Right Column - Booking Card */}
+          {/* Right Column — Booking Card */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-20 shadow-lg">
-              <CardHeader>
+            <Card className="sticky top-20 overflow-hidden border-white/10 bg-card shadow-[0_8px_48px_oklch(0_0_0/40%)]">
+              <CardHeader className="pb-4">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold">${property.price_per_night.toFixed(0)}</span>
-                  <span className="text-muted-foreground">/ night</span>
+                  <span className="font-serif text-3xl font-normal text-foreground">${property.price_per_night.toFixed(0)}</span>
+                  <span className="text-sm text-muted-foreground">/ night</span>
                 </div>
                 {property.rating_avg > 0 && (
-                  <div className="flex items-center gap-1 text-sm">
-                    <Star className="size-3.5 fill-current text-yellow-500" />
-                    <span className="font-medium">{property.rating_avg.toFixed(2)}</span>
+                  <div className="flex items-center gap-1.5 text-sm">
+                    <Star className="size-3.5 fill-gold text-gold" />
+                    <span className="font-medium text-foreground">{property.rating_avg.toFixed(2)}</span>
                     <span className="text-muted-foreground">· {property.review_count} reviews</span>
                   </div>
                 )}
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-5">
                 {/* Date Picker */}
                 <div>
-                  <p className="mb-2 text-sm font-medium">Select dates</p>
-                  <div className="rounded-lg border p-2">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Select dates</p>
+                  <div className="overflow-hidden rounded-xl border border-white/10 bg-white/4">
                     <Calendar
                       mode="range"
                       selected={dateRange}
@@ -297,9 +310,9 @@ export function PropertyDetailPage() {
 
                 {/* Guests */}
                 <div>
-                  <p className="mb-2 text-sm font-medium">Guests</p>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Guests</p>
                   <Select value={guests} onValueChange={setGuests}>
-                    <SelectTrigger>
+                    <SelectTrigger className="border-white/10 bg-white/4">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -314,8 +327,8 @@ export function PropertyDetailPage() {
 
                 {/* Cost Breakdown */}
                 {nights > 0 && (
-                  <div className="space-y-2 rounded-lg bg-muted/50 p-3 text-sm">
-                    <div className="flex justify-between">
+                  <div className="space-y-2 rounded-xl border border-white/8 bg-white/4 p-3.5 text-sm">
+                    <div className="flex justify-between text-foreground">
                       <span>${property.price_per_night.toFixed(0)} × {nights} night{nights > 1 ? 's' : ''}</span>
                       <span>${baseCost.toFixed(2)}</span>
                     </div>
@@ -329,8 +342,8 @@ export function PropertyDetailPage() {
                       <span>Service fee ({property.service_fee_percent}%)</span>
                       <span>${serviceFee.toFixed(2)}</span>
                     </div>
-                    <Separator />
-                    <div className="flex justify-between font-semibold">
+                    <Separator className="bg-white/10" />
+                    <div className="flex justify-between font-semibold text-foreground">
                       <span>Total</span>
                       <span>${totalCost.toFixed(2)}</span>
                     </div>
@@ -338,15 +351,19 @@ export function PropertyDetailPage() {
                 )}
 
                 <Button
-                  className="w-full"
+                  className="w-full bg-foreground text-background font-semibold transition-all duration-200 hover:bg-foreground/90 hover:scale-[1.01] disabled:opacity-40"
                   size="lg"
                   onClick={handleBooking}
                   disabled={!dateRange?.from || !dateRange?.to || nights < (property.min_stay_nights || 1)}
                 >
-                  {!dateRange?.from ? 'Select dates to book' : nights < (property.min_stay_nights || 1) ? `Minimum ${property.min_stay_nights} nights` : 'Reserve Now'}
+                  {!dateRange?.from
+                    ? 'Select dates to book'
+                    : nights < (property.min_stay_nights || 1)
+                      ? `Minimum ${property.min_stay_nights} nights`
+                      : 'Reserve Now'}
                 </Button>
 
-                <p className="text-center text-xs text-muted-foreground">You won't be charged yet</p>
+                <p className="text-center text-xs text-muted-foreground">You won&apos;t be charged yet</p>
               </CardContent>
             </Card>
           </div>
