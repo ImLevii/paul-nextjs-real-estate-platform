@@ -7,15 +7,15 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
-import { supabase, type Booking, type Property } from '@/lib/supabase'
+import { type Booking } from '@/lib/supabase'
+import { api, type BookingWithProperty } from '@/lib/api'
 import { BOOKING_STATUSES, PAYMENT_STATUSES } from '@/lib/constants'
 import { format, parseISO } from 'date-fns'
 
-type BookingWithProperty = Booking & { property?: Property }
+type BookingRow = BookingWithProperty
 
 export function AdminBookings() {
-  const [bookings, setBookings] = useState<BookingWithProperty[]>([])
-  const [, setProperties] = useState<Map<string, Property>>(new Map())
+  const [bookings, setBookings] = useState<BookingRow[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -25,27 +25,17 @@ export function AdminBookings() {
   }, [])
 
   async function loadData() {
-    const [{ data: books }, { data: props }] = await Promise.all([
-      supabase.from('bookings').select('*').order('created_at', { ascending: false }),
-      supabase.from('properties').select('id, title, city, state, property_type'),
-    ])
-
-    const propMap = new Map<string, Property>()
-    props?.forEach(p => propMap.set(p.id, p as Property))
-    setProperties(propMap)
-
-    const enriched = (books || []).map(b => ({
-      ...b,
-      property: propMap.get(b.property_id),
-    }))
-    setBookings(enriched)
+    const data = await api.admin.bookings.list().catch(() => [])
+    setBookings(data)
     setLoading(false)
   }
 
   async function updateStatus(id: string, status: string) {
-    const { error } = await supabase.from('bookings').update({ status, updated_at: new Date().toISOString() }).eq('id', id)
-    if (!error) {
+    try {
+      await api.admin.bookings.update(id, { status })
       setBookings(bs => bs.map(b => b.id === id ? { ...b, status: status as Booking['status'] } : b))
+    } catch {
+      // silently ignore
     }
   }
 

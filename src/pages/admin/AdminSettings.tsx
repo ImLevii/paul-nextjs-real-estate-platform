@@ -10,42 +10,60 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
+const SETTINGS_KEY = 'haven_admin_settings'
+
+const DEFAULT_SETTINGS = {
+  siteName: 'Haven',
+  siteUrl: 'https://haven.example.com',
+  contactEmail: 'admin@haven.com',
+  currency: 'USD',
+  defaultServiceFee: '12',
+  defaultCleaningFee: '50',
+  defaultMinStay: '1',
+  defaultCheckIn: '15:00',
+  defaultCheckOut: '11:00',
+  stripePublicKey: 'pk_test_...',
+  stripeSecretKey: '',
+  paypalClientId: '',
+  paypalEnabled: true,
+  stripeEnabled: true,
+  emailNotifications: true,
+  bookingConfirmations: true,
+  cancellationAlerts: true,
+  newListingReviews: true,
+  requireEmailVerification: false,
+  autoConfirmBookings: false,
+  allowGuestReviews: true,
+}
+
+type Settings = typeof DEFAULT_SETTINGS
+
+function loadSettings() {
+  try {
+    const stored = localStorage.getItem(SETTINGS_KEY)
+    if (stored) return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) }
+  } catch { /* ignore */ }
+  return DEFAULT_SETTINGS
+}
 
 export function AdminSettings() {
   const [saving, setSaving] = useState(false)
-  const [settings, setSettings] = useState({
-    siteName: 'Haven',
-    siteUrl: 'https://haven.example.com',
-    contactEmail: 'admin@haven.com',
-    currency: 'USD',
-    defaultServiceFee: '12',
-    defaultCleaningFee: '50',
-    defaultMinStay: '1',
-    defaultCheckIn: '15:00',
-    defaultCheckOut: '11:00',
-    stripePublicKey: 'pk_test_...',
-    stripeSecretKey: '',
-    paypalClientId: '',
-    paypalEnabled: true,
-    stripeEnabled: true,
-    emailNotifications: true,
-    bookingConfirmations: true,
-    cancellationAlerts: true,
-    newListingReviews: true,
-    requireEmailVerification: false,
-    autoConfirmBookings: false,
-    allowGuestReviews: true,
-  })
+  const [settings, setSettings] = useState<Settings>(loadSettings)
 
-  function set(key: string, value: string | boolean) {
-    setSettings(s => ({ ...s, [key]: value }))
+  function set<K extends keyof Settings>(key: K, value: Settings[K]) {
+    setSettings(current => ({ ...current, [key]: value }))
   }
 
   async function handleSave() {
     setSaving(true)
-    await new Promise(r => setTimeout(r, 800)) // Simulate save
-    setSaving(false)
-    toast.success('Settings saved successfully')
+    try {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
+      toast.success('Settings saved successfully')
+    } catch {
+      toast.error('Failed to save settings')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -276,7 +294,7 @@ export function AdminSettings() {
                     </div>
                     <Switch
                       checked={settings[n.key as keyof typeof settings] as boolean}
-                      onCheckedChange={v => set(n.key, v)}
+                      onCheckedChange={v => set(n.key as keyof Settings, v)}
                     />
                   </div>
                 </div>

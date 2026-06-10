@@ -1,7 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
+const viteEnv = import.meta as ImportMeta & {
+  env: {
+    VITE_SUPABASE_URL: string
+    VITE_SUPABASE_ANON_KEY: string
+  }
+}
+
+const supabaseUrl = viteEnv.env.VITE_SUPABASE_URL as string
+const supabaseAnonKey = viteEnv.env.VITE_SUPABASE_ANON_KEY as string
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
@@ -89,4 +96,15 @@ export type Review = {
   rating: number
   comment: string
   created_at: string
+}
+
+export type HeroSlide = {
+  id: string
+  image: string
+  location: string
+  tagline: string
+  sort_order: number
+  is_active: boolean
+  created_at: string
+  updated_at: string
 }
