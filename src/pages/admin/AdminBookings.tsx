@@ -15,7 +15,7 @@ type BookingWithProperty = Booking & { property?: Property }
 
 export function AdminBookings() {
   const [bookings, setBookings] = useState<BookingWithProperty[]>([])
-  const [, setProperties] = useState<Map<string, Property>>(new Map())
+  const [_properties, setProperties] = useState<Map<string, Property>>(new Map())
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -71,7 +71,7 @@ export function AdminBookings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="scroll-m-20 text-2xl font-bold tracking-tight">Bookings</h1>
+          <h1 className="font-serif text-2xl font-normal text-foreground">Bookings</h1>
           <p className="text-sm text-muted-foreground">{bookings.length} total reservations</p>
         </div>
       </div>
@@ -79,12 +79,12 @@ export function AdminBookings() {
       {/* Stats row */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {[
-          { label: 'Total', value: stats.total, color: '' },
-          { label: 'Pending', value: stats.pending, color: 'text-yellow-600 dark:text-yellow-400' },
-          { label: 'Confirmed', value: stats.confirmed, color: 'text-green-600 dark:text-green-400' },
-          { label: 'Revenue', value: `$${stats.revenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}`, color: '' },
+          { label: 'Total', value: stats.total, color: 'text-foreground' },
+          { label: 'Pending', value: stats.pending, color: 'text-amber-400' },
+          { label: 'Confirmed', value: stats.confirmed, color: 'text-emerald-400' },
+          { label: 'Revenue', value: `$${stats.revenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}`, color: 'text-gold' },
         ].map(s => (
-          <Card key={s.label}>
+          <Card key={s.label} className="border-white/8 bg-card">
             <CardContent className="p-4">
               <p className="text-xs text-muted-foreground">{s.label}</p>
               <p className={`text-xl font-bold ${s.color}`}>{s.value}</p>
@@ -99,13 +99,13 @@ export function AdminBookings() {
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search by guest name, email, or property..."
-            className="pl-9"
+            className="border-white/10 bg-white/5 pl-9 text-foreground placeholder:text-muted-foreground focus-visible:ring-white/20"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-44">
+          <SelectTrigger className="w-full border-white/10 bg-white/5 sm:w-44">
             <Filter className="size-4 mr-1" />
             <SelectValue />
           </SelectTrigger>
@@ -120,39 +120,41 @@ export function AdminBookings() {
 
       {loading ? (
         <div className="space-y-3">
-          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28" />)}
+          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28 rounded-xl bg-white/5" />)}
         </div>
       ) : filtered.length === 0 ? (
-        <Card>
+        <Card className="border-white/8 bg-card">
           <CardContent className="py-16 text-center">
-            <CalendarDays className="mx-auto size-10 text-muted-foreground" />
-            <h3 className="mt-3 font-semibold">No bookings found</h3>
+            <div className="inline-flex size-14 items-center justify-center rounded-2xl bg-white/6 mb-4">
+              <CalendarDays className="size-6 text-muted-foreground" />
+            </div>
+            <h3 className="font-semibold text-foreground">No bookings found</h3>
             <p className="mt-1 text-sm text-muted-foreground">
               {search || statusFilter !== 'all' ? 'Try adjusting your filters' : 'Bookings will appear here once guests start reserving'}
             </p>
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 stagger-children">
           {filtered.map(booking => {
             const status = BOOKING_STATUSES[booking.status]
             const payStatus = PAYMENT_STATUSES[booking.payment_status]
             return (
-              <Card key={booking.id}>
+              <Card key={booking.id} className="border-white/8 bg-card transition-all duration-200 hover:border-white/15">
                 <CardContent className="p-4">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-semibold">{booking.guest_name || booking.guest_email || 'Guest'}</h3>
+                        <h3 className="font-semibold text-foreground">{booking.guest_name || booking.guest_email || 'Guest'}</h3>
                         <Badge className={`text-xs ${status?.color}`}>{status?.label}</Badge>
                         <Badge variant="outline" className={`text-xs ${payStatus?.color}`}>{payStatus?.label}</Badge>
-                        <Badge variant="outline" className="text-xs capitalize">{booking.payment_method}</Badge>
+                        <Badge variant="outline" className="text-xs capitalize border-white/12">{booking.payment_method}</Badge>
                       </div>
                       {booking.guest_email && (
                         <p className="text-sm text-muted-foreground">{booking.guest_email}</p>
                       )}
                       {booking.property && (
-                        <p className="text-sm font-medium">{booking.property.title} · {booking.property.city}, {booking.property.state}</p>
+                        <p className="text-sm font-medium text-foreground">{booking.property.title} · {booking.property.city}, {booking.property.state}</p>
                       )}
                       <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
@@ -166,17 +168,17 @@ export function AdminBookings() {
 
                     <div className="flex flex-row items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
                       <div className="text-right">
-                        <p className="text-lg font-bold">${booking.total_price.toFixed(0)}</p>
+                        <p className="text-lg font-bold text-foreground">${booking.total_price.toFixed(0)}</p>
                         <p className="text-xs text-muted-foreground">total</p>
                       </div>
                       <div className="flex gap-1">
                         {booking.status === 'pending' && (
                           <>
-                            <Button size="xs" onClick={() => updateStatus(booking.id, 'confirmed')}>Confirm</Button>
-                            <Button size="xs" variant="outline" onClick={() => updateStatus(booking.id, 'cancelled')}>Decline</Button>
+                            <Button size="xs" className="bg-foreground text-background hover:bg-foreground/90" onClick={() => updateStatus(booking.id, 'confirmed')}>Confirm</Button>
+                            <Button size="xs" variant="outline" className="border-white/12 text-muted-foreground hover:text-foreground" onClick={() => updateStatus(booking.id, 'cancelled')}>Decline</Button>
                           </>
                         )}
-                        <Button size="xs" variant="ghost" asChild>
+                        <Button size="xs" variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
                           <Link to={`/admin/bookings/${booking.id}`}>
                             Details <ArrowRight className="size-3" />
                           </Link>

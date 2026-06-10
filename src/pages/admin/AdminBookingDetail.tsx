@@ -64,13 +64,13 @@ export function AdminBookingDetail() {
   const payStatus = PAYMENT_STATUSES[booking.payment_status]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon-sm" asChild>
+        <Button variant="ghost" size="icon-sm" asChild className="text-muted-foreground hover:text-foreground">
           <Link to="/admin/bookings"><ChevronLeft className="size-5" /></Link>
         </Button>
         <div>
-          <h1 className="scroll-m-20 text-2xl font-bold tracking-tight">Booking Details</h1>
+          <h1 className="font-serif text-2xl font-normal text-foreground">Booking Details</h1>
           <p className="font-mono text-xs text-muted-foreground">{booking.id}</p>
         </div>
       </div>
@@ -78,9 +78,9 @@ export function AdminBookingDetail() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
           {/* Status Management */}
-          <Card>
+          <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle>Status Management</CardTitle>
+              <CardTitle className="text-sm font-semibold text-foreground">Status Management</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -121,9 +121,9 @@ export function AdminBookingDetail() {
           </Card>
 
           {/* Stay Details */}
-          <Card>
+          <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><CalendarDays className="size-4" /> Stay Details</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground"><CalendarDays className="size-4 text-muted-foreground" /> Stay Details</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
@@ -158,9 +158,9 @@ export function AdminBookingDetail() {
           </Card>
 
           {/* Guest Info */}
-          <Card>
+          <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><User className="size-4" /> Guest Information</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground"><User className="size-4 text-muted-foreground" /> Guest Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div>
@@ -179,9 +179,9 @@ export function AdminBookingDetail() {
         <div className="space-y-6">
           {/* Property */}
           {property && (
-            <Card>
+            <Card className="border-white/8 bg-card">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Home className="size-4" /> Property</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground"><Home className="size-4 text-muted-foreground" /> Property</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <p className="font-medium">{property.title}</p>
@@ -199,9 +199,9 @@ export function AdminBookingDetail() {
           )}
 
           {/* Payment */}
-          <Card>
+          <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><CreditCard className="size-4" /> Payment Breakdown</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground"><CreditCard className="size-4 text-muted-foreground" /> Payment Breakdown</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -240,9 +240,9 @@ export function AdminBookingDetail() {
           </Card>
 
           {/* Dates */}
-          <Card>
+          <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Clock className="size-4" /> Timeline</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground"><Clock className="size-4 text-muted-foreground" /> Timeline</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex justify-between">

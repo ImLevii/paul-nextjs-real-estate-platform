@@ -10,16 +10,15 @@ import { supabase, type Property, type Booking } from '@/lib/supabase'
 import { BOOKING_STATUSES } from '@/lib/constants'
 import { format, parseISO } from 'date-fns'
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid
+  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
 } from 'recharts'
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
 
 const chartConfig = {
-  revenue: { label: 'Revenue', color: 'var(--chart-1)' },
+  revenue: { label: 'Revenue', color: 'var(--color-gold)' },
   bookings: { label: 'Bookings', color: 'var(--chart-2)' },
 }
 
-// Demo chart data
 const revenueData = [
   { month: 'Jan', revenue: 4200, bookings: 12 },
   { month: 'Feb', revenue: 5800, bookings: 18 },
@@ -34,9 +33,7 @@ export function AdminDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadData()
-  }, [])
+  useEffect(() => { loadData() }, [])
 
   async function loadData() {
     const [{ data: props }, { data: books }] = await Promise.all([
@@ -54,109 +51,112 @@ export function AdminDashboard() {
   const totalRevenue = bookings
     .filter(b => b.payment_status === 'paid' || b.payment_status === 'authorized')
     .reduce((sum, b) => sum + b.total_price, 0)
-
   const recentBookings = bookings.slice(0, 5)
 
   if (loading) {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28" />)}
+          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28 rounded-xl bg-white/5" />)}
         </div>
-        <Skeleton className="h-64" />
+        <Skeleton className="h-64 rounded-xl bg-white/5" />
       </div>
     )
   }
+
+  const stats = [
+    {
+      label: 'Total Listings',
+      value: properties.length,
+      sub: `${activeProperties} active`,
+      icon: Building2,
+      trend: null,
+    },
+    {
+      label: 'Total Bookings',
+      value: bookings.length,
+      sub: `${pendingBookings} pending · ${confirmedBookings} confirmed`,
+      icon: CalendarDays,
+      trend: null,
+    },
+    {
+      label: 'Revenue',
+      value: `$${totalRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}`,
+      sub: '+12% this month',
+      icon: DollarSign,
+      trend: 'up',
+    },
+    {
+      label: 'Avg Rating',
+      value: properties.length > 0
+        ? (properties.reduce((s, p) => s + (p.rating_avg || 0), 0) /
+            (properties.filter(p => p.rating_avg > 0).length || 1)).toFixed(2)
+        : '—',
+      sub: 'Across all properties',
+      icon: Star,
+      trend: null,
+    },
+  ]
 
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="scroll-m-20 text-2xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">Welcome back. Here's what's happening.</p>
+        <h1 className="font-serif text-2xl font-normal text-foreground">Dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Welcome back. Here&apos;s what&apos;s happening.</p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Listings</CardTitle>
-            <Building2 className="size-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{properties.length}</div>
-            <p className="mt-1 text-xs text-muted-foreground">{activeProperties} active</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Bookings</CardTitle>
-            <CalendarDays className="size-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{bookings.length}</div>
-            <p className="mt-1 text-xs text-muted-foreground">{pendingBookings} pending · {confirmedBookings} confirmed</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Revenue</CardTitle>
-            <DollarSign className="size-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${totalRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}</div>
-            <p className="mt-1 flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
-              <ArrowUpRight className="size-3" /> +12% this month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Avg Rating</CardTitle>
-            <Star className="size-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {properties.length > 0
-                ? (properties.reduce((s, p) => s + (p.rating_avg || 0), 0) / properties.filter(p => p.rating_avg > 0).length || 0).toFixed(2)
-                : '—'}
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">Across all properties</p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4 stagger-children">
+        {stats.map(stat => (
+          <Card key={stat.label} className="border-white/8 bg-card hover-lift transition-all duration-200">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-xs font-medium text-muted-foreground">{stat.label}</CardTitle>
+              <div className="flex size-7 items-center justify-center rounded-lg bg-white/6">
+                <stat.icon className="size-3.5 text-muted-foreground" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
+              <p className={`mt-1 flex items-center gap-1 text-xs ${
+                stat.trend === 'up' ? 'text-emerald-400' : 'text-muted-foreground'
+              }`}>
+                {stat.trend === 'up' && <ArrowUpRight className="size-3" />}
+                {stat.sub}
+              </p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         {/* Revenue Chart */}
-        <Card className="lg:col-span-3">
+        <Card className="border-white/8 bg-card lg:col-span-3">
           <CardHeader>
-            <CardTitle>Revenue Overview</CardTitle>
-            <CardDescription>Monthly revenue for 2025</CardDescription>
+            <CardTitle className="text-sm font-semibold text-foreground">Revenue Overview</CardTitle>
+            <CardDescription className="text-xs text-muted-foreground">Monthly revenue for 2025</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="h-48 w-full">
               <BarChart data={revenueData}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
-                <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12 }} tickFormatter={v => `$${v / 1000}k`} />
-                <Tooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="revenue" fill="var(--color-revenue)" radius={[4, 4, 0, 0]} />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="oklch(1 0 0 / 6%)" />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'oklch(0.50 0 0)' }} />
+                <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: 'oklch(0.50 0 0)' }} tickFormatter={v => `$${v / 1000}k`} />
+                <Tooltip content={<ChartTooltipContent />} cursor={{ fill: 'oklch(1 0 0 / 4%)' }} />
+                <Bar dataKey="revenue" fill="var(--color-gold)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ChartContainer>
           </CardContent>
         </Card>
 
         {/* Top Properties */}
-        <Card className="lg:col-span-2">
+        <Card className="border-white/8 bg-card lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Top Properties</CardTitle>
-              <CardDescription>By rating</CardDescription>
+              <CardTitle className="text-sm font-semibold text-foreground">Top Properties</CardTitle>
+              <CardDescription className="text-xs text-muted-foreground">By rating</CardDescription>
             </div>
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="ghost" size="sm" asChild className="text-xs text-muted-foreground hover:text-foreground">
               <Link to="/admin/listings">View all</Link>
             </Button>
           </CardHeader>
@@ -165,21 +165,21 @@ export function AdminDashboard() {
               {properties
                 .filter(p => p.rating_avg > 0)
                 .sort((a, b) => b.rating_avg - a.rating_avg)
-                .slice(0, 4)
+                .slice(0, 5)
                 .map(p => (
                   <div key={p.id} className="flex items-center justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">{p.title}</p>
+                      <p className="truncate text-sm font-medium text-foreground">{p.title}</p>
                       <p className="text-xs text-muted-foreground">{p.city}, {p.state}</p>
                     </div>
                     <div className="shrink-0 flex items-center gap-1 text-sm">
-                      <Star className="size-3 fill-current text-yellow-500" />
-                      <span className="font-medium">{p.rating_avg.toFixed(1)}</span>
+                      <Star className="size-3 fill-gold text-gold" />
+                      <span className="font-medium text-foreground">{p.rating_avg.toFixed(1)}</span>
                     </div>
                   </div>
                 ))}
               {properties.filter(p => p.rating_avg > 0).length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-4">No ratings yet</p>
+                <p className="py-4 text-center text-sm text-muted-foreground">No ratings yet</p>
               )}
             </div>
           </CardContent>
@@ -187,38 +187,44 @@ export function AdminDashboard() {
       </div>
 
       {/* Recent Bookings */}
-      <Card>
+      <Card className="border-white/8 bg-card">
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle>Recent Bookings</CardTitle>
-            <CardDescription>Latest reservation activity</CardDescription>
+            <CardTitle className="text-sm font-semibold text-foreground">Recent Bookings</CardTitle>
+            <CardDescription className="text-xs text-muted-foreground">Latest reservation activity</CardDescription>
           </div>
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/admin/bookings">View all <ArrowRight className="size-4" /></Link>
+          <Button variant="ghost" size="sm" asChild className="gap-1 text-xs text-muted-foreground hover:text-foreground">
+            <Link to="/admin/bookings">View all <ArrowRight className="size-3.5" /></Link>
           </Button>
         </CardHeader>
         <CardContent>
           {recentBookings.length === 0 ? (
             <div className="py-8 text-center text-sm text-muted-foreground">
-              No bookings yet. <Link to="/admin/listings" className="text-primary hover:underline">Add a listing</Link> to get started.
+              No bookings yet.{' '}
+              <Link to="/admin/listings" className="text-foreground underline-offset-4 hover:underline">
+                Add a listing
+              </Link>{' '}
+              to get started.
             </div>
           ) : (
-            <div className="space-y-0">
+            <div>
               {recentBookings.map((booking, i) => {
                 const status = BOOKING_STATUSES[booking.status]
                 return (
                   <div key={booking.id}>
-                    {i > 0 && <Separator />}
+                    {i > 0 && <Separator className="bg-white/6" />}
                     <div className="flex items-center justify-between gap-4 py-3">
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">{booking.guest_name || booking.guest_email || 'Guest'}</p>
+                        <p className="truncate text-sm font-medium text-foreground">
+                          {booking.guest_name || booking.guest_email || 'Guest'}
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           {format(parseISO(booking.check_in), 'MMM d')} – {format(parseISO(booking.check_out), 'MMM d, yyyy')}
                         </p>
                       </div>
                       <div className="shrink-0 text-right">
                         <Badge className={`text-xs ${status?.color}`}>{status?.label}</Badge>
-                        <p className="mt-1 text-sm font-medium">${booking.total_price.toFixed(0)}</p>
+                        <p className="mt-1 text-sm font-semibold text-foreground">${booking.total_price.toFixed(0)}</p>
                       </div>
                     </div>
                   </div>
@@ -231,39 +237,43 @@ export function AdminDashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        <Button variant="outline" className="h-auto gap-3 p-4 justify-start" asChild>
-          <Link to="/admin/listings/new">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-              <Building2 className="size-4" />
-            </div>
-            <div className="text-left">
-              <p className="font-medium">Add Listing</p>
-              <p className="text-xs text-muted-foreground">Create a new property</p>
-            </div>
-          </Link>
-        </Button>
-        <Button variant="outline" className="h-auto gap-3 p-4 justify-start" asChild>
-          <Link to="/admin/bookings">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-              <CalendarDays className="size-4" />
-            </div>
-            <div className="text-left">
-              <p className="font-medium">Manage Bookings</p>
-              <p className="text-xs text-muted-foreground">{pendingBookings} pending requests</p>
-            </div>
-          </Link>
-        </Button>
-        <Button variant="outline" className="h-auto gap-3 p-4 justify-start" asChild>
-          <Link to="/">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-              <TrendingUp className="size-4" />
-            </div>
-            <div className="text-left">
-              <p className="font-medium">View Site</p>
-              <p className="text-xs text-muted-foreground">Preview public listings</p>
-            </div>
-          </Link>
-        </Button>
+        {[
+          {
+            to: '/admin/listings/new',
+            icon: Building2,
+            label: 'Add Listing',
+            sub: 'Create a new property',
+          },
+          {
+            to: '/admin/bookings',
+            icon: CalendarDays,
+            label: 'Manage Bookings',
+            sub: `${pendingBookings} pending requests`,
+          },
+          {
+            to: '/',
+            icon: TrendingUp,
+            label: 'View Site',
+            sub: 'Preview public listings',
+          },
+        ].map(action => (
+          <Button
+            key={action.to}
+            variant="outline"
+            className="h-auto justify-start gap-3 border-white/8 bg-white/4 p-4 text-left transition-all duration-200 hover:bg-white/8 hover:border-white/15"
+            asChild
+          >
+            <Link to={action.to}>
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/8">
+                <action.icon className="size-4 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">{action.label}</p>
+                <p className="text-xs text-muted-foreground">{action.sub}</p>
+              </div>
+            </Link>
+          </Button>
+        ))}
       </div>
     </div>
   )

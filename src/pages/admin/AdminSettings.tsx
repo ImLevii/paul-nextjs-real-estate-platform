@@ -52,27 +52,39 @@ export function AdminSettings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="scroll-m-20 text-2xl font-bold tracking-tight">Settings</h1>
+          <h1 className="font-serif text-2xl font-normal text-foreground">Settings</h1>
           <p className="text-sm text-muted-foreground">Configure your platform settings</p>
         </div>
-        <Button onClick={handleSave} disabled={saving}>
+        <Button
+          onClick={handleSave}
+          disabled={saving}
+          className="bg-foreground text-background hover:bg-foreground/90 transition-all duration-200 hover:scale-[1.02]"
+        >
           {saving ? <><Loader2 className="size-4 animate-spin" /> Saving...</> : <><Save className="size-4" /> Save Changes</>}
         </Button>
       </div>
 
       <Tabs defaultValue="general">
-        <TabsList className="flex w-full md:w-auto">
-          <TabsTrigger value="general" className="flex-1 md:flex-none"><Globe className="size-3.5 mr-1.5" />General</TabsTrigger>
-          <TabsTrigger value="payments" className="flex-1 md:flex-none"><CreditCard className="size-3.5 mr-1.5" />Payments</TabsTrigger>
-          <TabsTrigger value="notifications" className="flex-1 md:flex-none"><Bell className="size-3.5 mr-1.5" />Notifications</TabsTrigger>
-          <TabsTrigger value="security" className="flex-1 md:flex-none"><Shield className="size-3.5 mr-1.5" />Security</TabsTrigger>
+        <TabsList className="flex w-full border border-white/8 bg-white/4 md:w-auto">
+          <TabsTrigger value="general" className="flex-1 data-[state=active]:bg-white/10 data-[state=active]:text-foreground md:flex-none">
+            <Globe className="size-3.5 mr-1.5" />General
+          </TabsTrigger>
+          <TabsTrigger value="payments" className="flex-1 data-[state=active]:bg-white/10 data-[state=active]:text-foreground md:flex-none">
+            <CreditCard className="size-3.5 mr-1.5" />Payments
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="flex-1 data-[state=active]:bg-white/10 data-[state=active]:text-foreground md:flex-none">
+            <Bell className="size-3.5 mr-1.5" />Notifications
+          </TabsTrigger>
+          <TabsTrigger value="security" className="flex-1 data-[state=active]:bg-white/10 data-[state=active]:text-foreground md:flex-none">
+            <Shield className="size-3.5 mr-1.5" />Security
+          </TabsTrigger>
         </TabsList>
 
         {/* General */}
         <TabsContent value="general" className="mt-6 space-y-6">
-          <Card>
+            <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle>Site Information</CardTitle>
+              <CardTitle className="text-sm font-semibold text-foreground">Site Information</CardTitle>
               <CardDescription>Basic configuration for your rental platform</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -106,9 +118,9 @@ export function AdminSettings() {
             </CardContent>
           </Card>
 
-          <Card>
+            <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle>Listing Defaults</CardTitle>
+              <CardTitle className="text-sm font-semibold text-foreground">Listing Defaults</CardTitle>
               <CardDescription>Default values applied to new property listings</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -164,9 +176,9 @@ export function AdminSettings() {
 
         {/* Payments */}
         <TabsContent value="payments" className="mt-6 space-y-6">
-          <Card>
+            <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
                 <div className="flex size-6 items-center justify-center rounded bg-foreground text-background text-xs font-bold">S</div>
                 Stripe Configuration
               </CardTitle>
@@ -217,9 +229,9 @@ export function AdminSettings() {
             </CardContent>
           </Card>
 
-          <Card>
+            <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold text-foreground">
                 <div className="flex size-6 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">P</div>
                 PayPal Configuration
               </CardTitle>
@@ -255,9 +267,9 @@ export function AdminSettings() {
 
         {/* Notifications */}
         <TabsContent value="notifications" className="mt-6">
-          <Card>
+          <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle>Email Notifications</CardTitle>
+              <CardTitle className="text-sm font-semibold text-foreground">Email Notifications</CardTitle>
               <CardDescription>Configure when automated emails are sent</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -287,9 +299,9 @@ export function AdminSettings() {
 
         {/* Security */}
         <TabsContent value="security" className="mt-6">
-          <Card>
+          <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle>Access & Security</CardTitle>
+              <CardTitle className="text-sm font-semibold text-foreground">Access &amp; Security</CardTitle>
               <CardDescription>Control platform access and authentication requirements</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
