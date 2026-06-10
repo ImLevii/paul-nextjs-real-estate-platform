@@ -155,36 +155,40 @@ export function AdminListingEdit() {
   const rules = (form.rules as Record<string, boolean>) || {}
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon-sm" asChild>
+          <Button variant="ghost" size="icon-sm" asChild className="text-muted-foreground hover:text-foreground">
             <Link to="/admin/listings"><ChevronLeft className="size-5" /></Link>
           </Button>
           <div>
-            <h1 className="scroll-m-20 text-2xl font-bold tracking-tight">
+            <h1 className="font-serif text-2xl font-normal text-foreground">
               {isNew ? 'New Listing' : 'Edit Listing'}
             </h1>
             <p className="text-sm text-muted-foreground">{isNew ? 'Configure your new property' : form.title}</p>
           </div>
         </div>
-        <Button onClick={handleSave} disabled={saving}>
+        <Button
+          onClick={handleSave}
+          disabled={saving}
+          className="bg-foreground text-background hover:bg-foreground/90 transition-all duration-200 hover:scale-[1.02]"
+        >
           {saving ? <><Loader2 className="size-4 animate-spin" /> Saving...</> : <><Check className="size-4" /> {isNew ? 'Create Listing' : 'Save Changes'}</>}
         </Button>
       </div>
 
       <Tabs defaultValue="basics">
-        <TabsList className="grid w-full grid-cols-4 md:w-auto md:grid-cols-none md:flex">
-          <TabsTrigger value="basics">Basics</TabsTrigger>
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="amenities">Amenities</TabsTrigger>
-          <TabsTrigger value="photos">Photos</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4 border border-white/8 bg-white/4 md:w-auto md:grid-cols-none md:flex">
+          <TabsTrigger value="basics" className="data-[state=active]:bg-white/10 data-[state=active]:text-foreground">Basics</TabsTrigger>
+          <TabsTrigger value="details" className="data-[state=active]:bg-white/10 data-[state=active]:text-foreground">Details</TabsTrigger>
+          <TabsTrigger value="amenities" className="data-[state=active]:bg-white/10 data-[state=active]:text-foreground">Amenities</TabsTrigger>
+          <TabsTrigger value="photos" className="data-[state=active]:bg-white/10 data-[state=active]:text-foreground">Photos</TabsTrigger>
         </TabsList>
 
         {/* Basics Tab */}
         <TabsContent value="basics" className="mt-6 space-y-6">
-          <Card>
-            <CardHeader><CardTitle>Property Information</CardTitle></CardHeader>
+          <Card className="border-white/8 bg-card">
+            <CardHeader><CardTitle className="text-sm font-semibold text-foreground">Property Information</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="title">Title *</Label>
@@ -258,8 +262,8 @@ export function AdminListingEdit() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader><CardTitle>Location</CardTitle></CardHeader>
+          <Card className="border-white/8 bg-card">
+            <CardHeader><CardTitle className="text-sm font-semibold text-foreground">Location</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="address">Street Address *</Label>
@@ -294,8 +298,8 @@ export function AdminListingEdit() {
 
         {/* Details Tab */}
         <TabsContent value="details" className="mt-6 space-y-6">
-          <Card>
-            <CardHeader><CardTitle>Pricing</CardTitle></CardHeader>
+          <Card className="border-white/8 bg-card">
+            <CardHeader><CardTitle className="text-sm font-semibold text-foreground">Pricing</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-1.5">
@@ -333,8 +337,8 @@ export function AdminListingEdit() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader><CardTitle>Booking Settings</CardTitle></CardHeader>
+          <Card className="border-white/8 bg-card">
+            <CardHeader><CardTitle className="text-sm font-semibold text-foreground">Booking Settings</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
@@ -402,8 +406,8 @@ export function AdminListingEdit() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader><CardTitle>House Rules</CardTitle></CardHeader>
+          <Card className="border-white/8 bg-card">
+            <CardHeader><CardTitle className="text-sm font-semibold text-foreground">House Rules</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               {[
                 { key: 'no_smoking', label: 'No Smoking', desc: 'Smoking is not allowed on the property' },
@@ -428,9 +432,9 @@ export function AdminListingEdit() {
 
         {/* Amenities Tab */}
         <TabsContent value="amenities" className="mt-6">
-          <Card>
+          <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle>Amenities & Features</CardTitle>
+              <CardTitle className="text-sm font-semibold text-foreground">Amenities &amp; Features</CardTitle>
               <p className="text-sm text-muted-foreground">{amenities.length} selected</p>
             </CardHeader>
             <CardContent>
@@ -441,10 +445,10 @@ export function AdminListingEdit() {
                     <button
                       key={amenity}
                       onClick={() => toggleAmenity(amenity)}
-                      className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors text-left ${
+                      className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-sm transition-all duration-150 text-left ${
                         isSelected
-                          ? 'border-foreground bg-foreground text-background'
-                          : 'border-border hover:border-foreground/50 hover:bg-muted'
+                          ? 'border-foreground/40 bg-foreground text-background'
+                          : 'border-white/8 bg-white/3 text-muted-foreground hover:border-white/20 hover:bg-white/6 hover:text-foreground'
                       }`}
                     >
                       {isSelected && <Check className="size-3.5 shrink-0" />}
@@ -459,9 +463,9 @@ export function AdminListingEdit() {
 
         {/* Photos Tab */}
         <TabsContent value="photos" className="mt-6">
-          <Card>
+          <Card className="border-white/8 bg-card">
             <CardHeader>
-              <CardTitle>Property Photos</CardTitle>
+              <CardTitle className="text-sm font-semibold text-foreground">Property Photos</CardTitle>
               <p className="text-sm text-muted-foreground">Add URLs for your property images. The first photo will be the primary listing image.</p>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -469,7 +473,7 @@ export function AdminListingEdit() {
                 <div key={i} className="flex gap-2">
                   <div className="relative flex-1">
                     {i === 0 && (
-                      <Badge className="absolute -top-2 left-2 text-xs z-10">Primary</Badge>
+                      <Badge className="absolute -top-2 left-2 z-10 border-gold/30 bg-gold/10 text-[10px] font-semibold uppercase tracking-wide text-gold">Primary</Badge>
                     )}
                     <Input
                       placeholder="https://example.com/photo.jpg"
@@ -479,17 +483,17 @@ export function AdminListingEdit() {
                         newUrls[i] = e.target.value
                         setPhotoUrls(newUrls)
                       }}
-                      className={i === 0 ? 'mt-2' : ''}
+                      className={`border-white/10 bg-white/5 text-foreground placeholder:text-muted-foreground focus-visible:ring-white/20 ${i === 0 ? 'mt-2' : ''}`}
                     />
                   </div>
                   {url && (
-                    <img src={url} alt="" className="size-9 rounded-md object-cover border" onError={e => (e.currentTarget.style.display = 'none')} />
+                    <img src={url} alt="" className="size-9 rounded-lg object-cover border border-white/10" onError={e => (e.currentTarget.style.display = 'none')} />
                   )}
                   {photoUrls.length > 1 && (
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      className="text-muted-foreground"
+                      className="text-muted-foreground hover:text-destructive transition-colors"
                       onClick={() => setPhotoUrls(urls => urls.filter((_, j) => j !== i))}
                     >
                       <X className="size-4" />
@@ -501,7 +505,7 @@ export function AdminListingEdit() {
                 variant="outline"
                 size="sm"
                 onClick={() => setPhotoUrls(urls => [...urls, ''])}
-                className="gap-2"
+                className="gap-2 border-white/12 bg-white/4 text-muted-foreground hover:bg-white/8 hover:text-foreground"
               >
                 <Plus className="size-4" /> Add Photo URL
               </Button>
@@ -511,10 +515,14 @@ export function AdminListingEdit() {
       </Tabs>
 
       <div className="flex gap-3">
-        <Button onClick={handleSave} disabled={saving}>
+        <Button
+          onClick={handleSave}
+          disabled={saving}
+          className="bg-foreground text-background hover:bg-foreground/90 transition-all duration-200 hover:scale-[1.02]"
+        >
           {saving ? <><Loader2 className="size-4 animate-spin" /> Saving...</> : <><Check className="size-4" /> {isNew ? 'Create Listing' : 'Save Changes'}</>}
         </Button>
-        <Button variant="outline" asChild>
+        <Button variant="outline" asChild className="border-white/12 bg-white/4 text-muted-foreground hover:bg-white/8 hover:text-foreground">
           <Link to="/admin/listings">Cancel</Link>
         </Button>
       </div>

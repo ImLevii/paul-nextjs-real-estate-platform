@@ -10,7 +10,7 @@ import { supabase, type Property, type Booking } from '@/lib/supabase'
 import { BOOKING_STATUSES } from '@/lib/constants'
 import { format, parseISO } from 'date-fns'
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
+  BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid
 } from 'recharts'
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
 
